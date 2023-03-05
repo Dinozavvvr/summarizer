@@ -1,0 +1,9 @@
+version: '3.1'
+
+services:
+  # сервис для парсинга pdf файлов
+  sciense-parser:
+    platform: linux/amd64
+    image: ucrel/ucrel-science-parse:3.0.1
+    ports:
+      - "10001:8080"
