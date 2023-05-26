@@ -1,3 +1,6 @@
+import random
+
+
 class GeneticReactor:
 
     def __init__(self, chromosome_size, population_size):
@@ -47,7 +50,7 @@ class GeneticReactor:
             # первый родитель (index)
             parent_i1 = self.__get_parent(suitability_intervals)
             # второй родитель (index)
-            parent_i2 = self.__get_parent(suitability_intervals, parent_1)
+            parent_i2 = self.__get_parent(suitability_intervals, parent_i1)
             # скрещивание
             next_population.append(self.__crossover(parent_i1, parent_i2))
 
