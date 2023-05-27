@@ -7,7 +7,7 @@ from common.file.fileutils import save
 from common.net import netutils
 
 bs_parser = 'html.parser'
-save_dir = 'data/'
+save_dir = '../data/'
 source_list = [
     'http://mathnet.ru',
     'https://mathnet.ru'

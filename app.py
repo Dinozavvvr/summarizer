@@ -4,17 +4,19 @@
 from common.file.fileutils import *
 from common.log.logutils import *
 # Импорт утилиты для парсинга текста
-from process_utils.parser import *
+from utils.parser import *
+from utils.preprocessor import *
 
 # константы
 data_dir = 'data'
 
 if __name__ == '__main__':
-    file = get_path(data_dir, '2eba0771-3907-4d7a-9fcb-a64a27c7e955.pdf')
+    file = get_path(data_dir, 'karl_marks.txt')
 
-    document = parse_pdf(file)
+    document = read(file)
     log(document, True)
 
-    text = document['sections'][0]['text']
-    data = tokenize(text)
-    log(data, True)
+    text = document
+    preprocessor = Preprocessor('russian')
+    data = preprocessor.preprocess(text)
+    log(data.json(), True)
