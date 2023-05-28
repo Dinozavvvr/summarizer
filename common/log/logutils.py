@@ -5,8 +5,14 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
 
-def log(data, pretty=False):
-    if pretty:
-       pp.pprint(data)
-    else:
-        print(data)
+def jlog(json):
+    pp.pprint(json)
+
+
+def dflog(dataframe):
+    print(dataframe.name)
+    print(dataframe.to_string())
+
+
+def log(data):
+    print(data)

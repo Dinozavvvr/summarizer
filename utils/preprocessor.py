@@ -3,6 +3,7 @@ import uuid
 
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.stem import SnowballStemmer
 from pymorphy2 import MorphAnalyzer
 
 morph = MorphAnalyzer()
@@ -44,18 +45,20 @@ class Sentence:
 
 class Text:
 
-    def __init__(self, text: str, sentences: [Sentence]):
+    def __init__(self, text: str, sentences: [Sentence], title: Sentence = None):
         self.value = text
         self.sentences = sentences
+        self.title = title
 
     def json(self):
         return {
+            'title': self.title.json(),
             'value': self.value,
             'sentences': [sentence.json() for sentence in self.sentences]
         }
 
 
-class PreprocessedText:
+class Document:
     def __init__(self, original: Text, processed: Text):
         self.original = original
         self.processed = processed
@@ -92,6 +95,10 @@ class Preprocessor:
         return morph.normal_forms(token)[0]
 
     @staticmethod
+    def stem(token, language):
+        return SnowballStemmer(language).stem(token)
+
+    @staticmethod
     def clear(value, is_word=False):
         value = value.strip()
 
@@ -120,9 +127,10 @@ class Preprocessor:
     def tokenize(sentence, language):
         return word_tokenize(sentence, language)
 
-    def preprocess(self, text):
+    def preprocess(self, text, title=None):
         """
         :param text - оригинальный необработанный текст
+        :param title - заголовок статьи
         :return PreprocessedText {
             original = Text {
                 value: '...'
@@ -159,13 +167,18 @@ class Preprocessor:
             sentnece.words = words
 
             original_sentences.append(sentnece)
-        original_text = Text(text, original_sentences)
+
+        # заголовок
+        original_title = Sentence(title)
+        original_title.words = [Word(token, token, original_title) for token in self.tokenize(title, self.language)]
+
+        original_text = Text(text, original_sentences, original_title)
 
         # Обработанный текст
         processed_sentences = []
-        for sent in self.sentenize(text, self.language):
+        for i, sent in enumerate(self.sentenize(text, self.language)):
             sent = self.clear(sent)
-            sentence = Sentence()
+            sentence = Sentence(original=original_sentences[i])
 
             words = []
             for token in [token for token in self.tokenize(sent, self.language) if token not in self.stops]:
@@ -174,13 +187,20 @@ class Preprocessor:
                     word = self.lemmatize(word.lower())
                     words.append(Word(word, token, sentence))
 
+            if len(words) == 0:
+                continue
+
             sentence.value = " ".join([word.value for word in words])
             sentence.words = words
             processed_sentences.append(sentence)
 
-        for i in range(len(original_sentences)):
-            processed_sentences[i].original = original_sentences[i]
+        # заголовок
+        processed_title = Sentence(original=original_title)
+        processed_title.words = [Word(self.lemmatize(token), token, processed_title)
+                                 for token in self.tokenize(self.clear(title), self.language)]
+        processed_title.value = " ".join([word.value for word in processed_title.words])
 
-        processed_text = Text(". ".join([sentence.value for sentence in processed_sentences]), processed_sentences)
+        processed_text = Text(". ".join([sentence.value for sentence in processed_sentences]),
+                              processed_sentences, processed_title)
 
-        return PreprocessedText(original_text, processed_text)
+        return Document(original_text, processed_text)
