@@ -20,7 +20,8 @@ if __name__ == '__main__':
 
     # предобработка
     preprocessor = Preprocessor('russian')
-    title = 'Философия Карла Маркса'
+    title = 'Философия Карла Маркса и Энгельса'
+    # title = 'ТЕОРЕТИКО-ГРУППОВАЯ ФУНКЦИЯ МЕБИУСА ДЕЛЬСАРТА И ТЕОРИЯ ЛИНЕЙНЫХ ПРЕДСТАВЛЕНИЙ КОНЕЧНЫХ ГРУПП'.lower()
     document = preprocessor.preprocess(document, title)
     jlog(document.json())
 
@@ -37,6 +38,10 @@ if __name__ == '__main__':
     score_matrix.add_metric(LEN_CH())
     score_matrix.add_metric(LEN_W())
     score_matrix.add_metric(SVD())
+    score_matrix.add_metric(TITLE_O())
+    score_matrix.add_metric(TITLE_J())
+    score_matrix.add_metric(TITLE_C())
+    score_matrix.add_metric(TEXT_RANK())
     jlog(score_matrix.json())
 
     matrix_df = score_matrix.compute()

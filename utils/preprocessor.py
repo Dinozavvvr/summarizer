@@ -1,10 +1,12 @@
 import re
 import uuid
 
+from gingerit.gingerit import GingerIt
 from nltk.corpus import stopwords
-from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import SnowballStemmer
+from nltk.tokenize import sent_tokenize, word_tokenize
 from pymorphy2 import MorphAnalyzer
+from pyaspeller import YandexSpeller
 
 morph = MorphAnalyzer()
 
@@ -76,6 +78,7 @@ class Preprocessor:
         # Общие константы
         self.language = language
         self.stops = set(stopwords.words(language))
+        self.speller = YandexSpeller(lang=self.language[0:2])
 
     @staticmethod
     def lemmatize_many(tokens):
@@ -102,7 +105,8 @@ class Preprocessor:
     def clear(value, is_word=False):
         value = value.strip()
 
-        value = re.sub(r'[^А-Яа-яA-Za-z-.]', ' ', value)
+        value = re.sub('ё', 'e', value)
+        value = re.sub(r'[^А-Яа-яA-Za-z-.ёЁ]', ' ', value)
         value = re.sub('\n-', '', value)
         value = re.sub('\n', ' ', value)
         value = re.sub(r'^-.*', value[1:], value)
@@ -177,8 +181,8 @@ class Preprocessor:
         # Обработанный текст
         processed_sentences = []
         for i, sent in enumerate(self.sentenize(text, self.language)):
-            sent = self.clear(sent)
             sentence = Sentence(original=original_sentences[i])
+            sent = self.clear(sent)
 
             words = []
             for token in [token for token in self.tokenize(sent, self.language) if token not in self.stops]:

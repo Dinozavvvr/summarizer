@@ -5,6 +5,8 @@ import nltk
 import numpy as np
 import pandas as pd
 import yake
+from nltk.cluster.util import cosine_distance
+from sklearn.metrics.pairwise import cosine_similarity
 
 from utils.preprocessor import Document
 
@@ -405,6 +407,186 @@ class SVD(Metric):
 
     def get(self, sentence_index):
         return self.svd_per_sentence[sentence_index]
+
+
+class TITLE_O(Metric):
+    """
+    TITLE_O - Большее значение придается предложениям схожим с заголовком
+    """
+    name = 'TITLE_O'
+    description = 'Overlap similarity between title and sentence'
+
+    def __init__(self):
+        self.title_o_per_sentence = []
+
+    def compute(self, document: Document):
+        self.title_o_per_sentence = []
+
+        title_tokens = set([word.value for word in document.processed.title.words])
+
+        for sentence in document.processed.sentences:
+            sentence_tokens = set([word.value for word in sentence.words])
+            sentence_title_o = len(sentence_tokens.intersection(title_tokens)) / min(len(title_tokens),
+                                                                                     len(sentence_tokens))
+
+            self.title_o_per_sentence.append(sentence_title_o)
+
+    def get(self, sentence_index):
+        return self.title_o_per_sentence[sentence_index]
+
+
+class TITLE_J(Metric):
+    """
+    TITLE_J - Большее значение придается предложениям схожим с заголовком (по Жаккару)
+    """
+    name = 'TITLE_J'
+    description = 'Jaccard similarity between title and sentence'
+
+    def __init__(self):
+        self.title_j_per_sentence = []
+
+    def compute(self, document: Document):
+        self.title_j_per_sentence = []
+
+        title_tokens = set([word.value for word in document.processed.title.words])
+
+        for sentence in document.processed.sentences:
+            sentence_tokens = set([word.value for word in sentence.words])
+            intersection = len(sentence_tokens.intersection(title_tokens))
+            union = len(sentence_tokens) + len(title_tokens) - intersection
+
+            self.title_j_per_sentence.append(float(intersection) / union)
+
+    def get(self, sentence_index):
+        return self.title_j_per_sentence[sentence_index]
+
+
+class TITLE_C(Metric):
+    """
+    TITLE_C - Большее значение придается предложениям схожим с заголовком (Cosine)
+    """
+    name = 'TITLE_C'
+    description = 'Cosine similarity between title and sentence'
+
+    def __init__(self):
+        self.title_c_per_sentence = []
+        self.tf_isf = TF_ISF()
+
+    def compute(self, document: Document):
+        self.title_c_per_sentence = []
+
+        self.tf_isf.compute(document)
+        # количество предложений
+        m = len(self.tf_isf.tf_isf_per_sentence)
+        # количество токенов
+        n = len(self.tf_isf.tf_isf_per_token)
+
+        # построение матрицы Sentence x Token
+        matrix = np.zeros((n, m + 1))
+        i = 0
+        for token, value in self.tf_isf.tf_isf_per_token.items():
+            for j, sentence in enumerate(document.processed.sentences):
+                words = [word.value for word in sentence.words]
+                if token in words:
+                    matrix[i][j] = value * 100
+            i += 1
+
+        title_vector = np.zeros(n)
+
+        j = 0
+        for token, value in self.tf_isf.tf_isf_per_token.items():
+            words = [word.value for word in document.processed.title.words]
+            if token in words:
+                title_vector[j] = value * 100
+            j += 1
+
+        for sentence_vector in matrix.transpose():
+            self.title_c_per_sentence.append(cosine_similarity([title_vector], [sentence_vector])[0][0])
+
+    def get(self, sentence_index):
+        return self.title_c_per_sentence[sentence_index]
+
+
+class TEXT_RANK(Metric):
+
+    name = "TEXT_RANK"
+    description = "Page Rank implementation for texts"
+
+    def __init__(self):
+        self.text_rank_per_sentence = []
+
+    def compute(self, document: Document):
+        self.text_rank_per_sentence = []
+
+        sentences = []
+        for sentence in document.processed.sentences:
+            sentences.append([word.value for word in sentence.words])
+
+        matrix = self.build_similarity_matrix(sentences)
+        self.text_rank_per_sentence = self.page_rank(matrix)
+
+    def get(self, sentence_index):
+        return self.text_rank_per_sentence[sentence_index]
+
+    @staticmethod
+    def page_rank(similarity_matrix):
+
+        damping = 0.85
+        min_diff = 1e-5
+        steps = 100
+
+        pr_vector = np.array([1] * len(similarity_matrix))
+
+        previous_pr = 0
+        for epoch in range(steps):
+            pr_vector = (1 - damping) + damping * np.matmul(similarity_matrix, pr_vector)
+            if abs(previous_pr - sum(pr_vector)) < min_diff:
+                break
+            else:
+                previous_pr = sum(pr_vector)
+
+        return pr_vector
+
+    @staticmethod
+    def build_similarity_matrix(sentences):
+        sm = np.zeros([len(sentences), len(sentences)])
+
+        for idx1 in range(len(sentences)):
+            for idx2 in range(len(sentences)):
+                if idx1 == idx2:
+                    continue
+
+                sm[idx1][idx2] = TEXT_RANK.__sentence_similarity(sentences[idx1], sentences[idx2])
+
+        sm = TEXT_RANK.__get_symmetric_matrix(sm)
+
+        norm = np.sum(sm, axis=0)
+        sm_norm = np.divide(sm, norm, where=norm != 0)
+
+        return sm_norm
+
+    @staticmethod
+    def __get_symmetric_matrix(matrix):
+        return matrix + matrix.T - np.diag(matrix.diagonal())
+
+    @staticmethod
+    def __sentence_similarity(sent1, sent2):
+        all_words = list(set(sent1 + sent2))
+
+        vector1 = [0] * len(all_words)
+        vector2 = [0] * len(all_words)
+
+        for w in sent1:
+            vector1[all_words.index(w)] += 1
+
+        for w in sent2:
+            vector2[all_words.index(w)] += 1
+
+        return TEXT_RANK.core_cosine_similarity(vector1, vector2)
+
+    @staticmethod
+    def core_cosine_similarity(vector1, vector2):
+        return 1 - cosine_distance(vector1, vector2)
 
 
 class ScoreMatrix:
