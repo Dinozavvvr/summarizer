@@ -614,12 +614,11 @@ class ScoreMatrix:
         for i, metric in enumerate(self.metrics):
             metric.compute(document)
             for j, sentence in enumerate(document.processed.sentences):
-                self.score_matrix[j][i] = metric.get(j)
+                score_matrix[j][i] = metric.get(j)
 
         return score_matrix, self.__build_dataframe(document)
 
-    @staticmethod
-    def __build_dataframe(document: Document):
+    def __build_dataframe(self, document: Document):
         sentence_count = len(document.processed.sentences)
         processed_sentences = [sentence.value for sentence in document.processed.sentences]
         original_sentences = [sentence.original.value for sentence in document.processed.sentences]
