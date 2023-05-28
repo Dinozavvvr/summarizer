@@ -1,9 +1,30 @@
 # функция для построения итогового текста длинной от min до max на основании Score метрики приделожений из текста
-import random
+from core.scoring import *
+from utils.preprocessor import *
 
-from random_word import RandomWords
 
-random_word = RandomWords()
+class Article:
+
+    def __init__(self, title, text):
+        self.title = title,
+        self.text = text
+
+
+class Summarizer:
+
+    def __init__(self, metrics: [Metric], language='russian'):
+        self.language = language
+        self.metrics = metrics
+        if len(self.metrics) == 0:
+            raise ValueError('Metrics cannot be empty')
+
+        # SCORE - матрица
+        self.score_matrix = ScoreMatrix(self.metrics)
+        self.preprocessor = Preprocessor(self.language)
+
+    def summarize(self, article: Article):
+        document = self.preprocessor.preprocess(article.text, article.title)
+        matrix, dataframe = self.score_matrix.compute(document)
 
 
 def build_abstract(min_len, max_len, sentences, scores):
@@ -21,43 +42,3 @@ def build_abstract(min_len, max_len, sentences, scores):
             total_words += words_count
 
     return selected_sentences
-
-
-def generate_test_text(s_cout, s_min_len, s_max_len):
-    sentences = []
-    for _ in range(s_cout):
-        s_len = random.randint(s_min_len, s_max_len)
-        sentence = ""
-        word = random_word.get_random_word()
-        for _ in range(s_len):
-            sentence += f' {word} '
-        sentences.append(sentence)
-
-    return sentences
-
-
-def generate_scores(count, min_val, max_val):
-    return [random.uniform(min_val, max_val) for _ in range(count)]
-
-
-def check_len(sentences):
-    sum_ = 0
-    for sentence in sentences:
-        sum_ += len(sentence.split(' '))
-
-    return sum_
-
-
-def main():
-    s_count = 30
-    sentences = generate_test_text(s_count, 10, 20)
-    scores = generate_scores(s_count, 0, 10)
-
-    abstract = build_abstract(200, 300, sentences, scores)
-    print(abstract)
-    print('\n', sum(abstract))
-
-
-
-if __name__ == '__main__':
-    main()

@@ -591,10 +591,7 @@ class TEXT_RANK(Metric):
 
 class ScoreMatrix:
 
-    def __init__(self, document: Document, metrics: [Metric] = None):
-        self.document = document
-
-        self.matrix = [[]]
+    def __init__(self, metrics: [Metric] = None):
         self.metrics = metrics
         if metrics is None:
             self.metrics = []
@@ -611,20 +608,21 @@ class ScoreMatrix:
             'metrics': [metric.json() for metric in self.metrics]
         }
 
-    def compute(self):
-        self.matrix = np.zeros((len(self.document.processed.sentences), len(self.metrics)))
+    def compute(self, document: Document):
+        score_matrix = np.zeros((len(document.processed.sentences), len(self.metrics)))
 
         for i, metric in enumerate(self.metrics):
-            metric.compute(self.document)
-            for j, sentence in enumerate(self.document.processed.sentences):
-                self.matrix[j][i] = metric.get(j)
+            metric.compute(document)
+            for j, sentence in enumerate(document.processed.sentences):
+                self.score_matrix[j][i] = metric.get(j)
 
-        return self.__build_dataframe()
+        return score_matrix, self.__build_dataframe(document)
 
-    def __build_dataframe(self):
-        sentence_count = len(self.document.processed.sentences)
-        processed_sentences = [sentence.value for sentence in self.document.processed.sentences]
-        original_sentences = [sentence.original.value for sentence in self.document.processed.sentences]
+    @staticmethod
+    def __build_dataframe(document: Document):
+        sentence_count = len(document.processed.sentences)
+        processed_sentences = [sentence.value for sentence in document.processed.sentences]
+        original_sentences = [sentence.original.value for sentence in document.processed.sentences]
 
         data_frame = pd.DataFrame({
             # 'Sentence (Original)': original_sentences,

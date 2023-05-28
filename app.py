@@ -26,7 +26,7 @@ if __name__ == '__main__':
     jlog(document.json())
 
     # нахождение Score-матрицы
-    score_matrix = ScoreMatrix(document)
+    score_matrix = ScoreMatrix()
     score_matrix.add_metric(TF())
     score_matrix.add_metric(TF_ISF())
     score_matrix.add_metric(POS_F())
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     score_matrix.add_metric(TEXT_RANK())
     jlog(score_matrix.json())
 
-    matrix_df = score_matrix.compute()
+    matrix_df = score_matrix.compute(document)
     dflog(matrix_df)
 
 
