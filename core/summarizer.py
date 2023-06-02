@@ -6,9 +6,10 @@ from utils.preprocessor import *
 
 class Article:
 
-    def __init__(self, title: str, text: str):
+    def __init__(self, title: str, text: str, annotation: str = None):
         self.title = title
         self.text = text
+        self.annotation = annotation
 
 
 class Summary:
@@ -20,10 +21,11 @@ class Summary:
 
 class Summarizer:
 
-    def __init__(self, metrics: [Metric], weights: [float], language='russian'):
+    def __init__(self, metrics: [Metric], weights: [float], language='russian', max_len=300):
         self.language = language
         self.metrics = metrics
         self.weights = weights
+        self.max_len = max_len
 
         if len(self.metrics) == 0:
             raise ValueError('Metrics cannot be empty')
@@ -34,7 +36,7 @@ class Summarizer:
         self.score_matrix = ScoreMatrix(self.metrics)
         self.preprocessor = Preprocessor(self.language)
 
-    def summarize(self, max_len, article: Article, verbose=False):
+    def summarize(self, article: Article, max_len=self.max_len, verbose=False):
         document = self.preprocessor.preprocess(article.text, article.title)
         matrix, dataframe = self.score_matrix.compute(document)
 
