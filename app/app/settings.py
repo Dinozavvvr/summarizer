@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'base',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -79,8 +80,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'summarizer',
+        'USER': 'summarizer',
+        'PASSWORD': '1920',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
