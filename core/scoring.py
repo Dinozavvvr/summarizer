@@ -624,8 +624,8 @@ class ScoreMatrix:
         original_sentences = [sentence.original.value for sentence in document.processed.sentences]
 
         data_frame = pd.DataFrame({
-            # 'Sentence (Original)': original_sentences,
-            # 'Sentence (Processed)': processed_sentences,
+            'Sentence (Original)': original_sentences,
+            'Sentence (Processed)': processed_sentences,
         })
         data_frame.name = 'Score-Matrix'
         for metric in self.metrics:

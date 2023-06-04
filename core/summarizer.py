@@ -21,22 +21,25 @@ class Summary:
 
 class Summarizer:
 
-    def __init__(self, metrics: [Metric], weights: [float], language='russian', max_len=300):
+    def __init__(self, metrics: [Metric], weights: [float] = None, language='russian', max_len=300):
         self.language = language
         self.metrics = metrics
-        self.weights = weights
         self.max_len = max_len
+        self.weights = weights
+        if self.weights is None:
+            self.weights = []
 
         if len(self.metrics) == 0:
             raise ValueError('Metrics cannot be empty')
-        if len(self.metrics) != len(self.weights):
-            raise ValueError('Weights len must be the same as metrics len')
 
         # SCORE - матрица
         self.score_matrix = ScoreMatrix(self.metrics)
         self.preprocessor = Preprocessor(self.language)
 
-    def summarize(self, article: Article, max_len=self.max_len, verbose=False):
+    def summarize(self, article: Article, max_len=None, verbose=False):
+        if max_len is None:
+            max_len = self.max_len
+
         document = self.preprocessor.preprocess(article.text, article.title)
         matrix, dataframe = self.score_matrix.compute(document)
 
@@ -51,6 +54,21 @@ class Summarizer:
             sentence_score = 0
             for j in range(len(self.metrics)):
                 sentence_score += matrix[i][j] * self.weights[j]
+            scores.append(sentence_score)
+
+        return self.build_abstract(max_len, document.original.sentences, scores)
+
+    # вариация метода summarize для вызова Генетическим Алгоритмом
+    def summarize_(self, document: Document, score_matrix, weights, max_len=None):
+        if max_len is None:
+            max_len = self.max_len
+
+        # подсчитываем final score для каждого предложения
+        scores = []
+        for i in range(len(score_matrix)):
+            sentence_score = 0
+            for j in range(len(self.metrics)):
+                sentence_score += score_matrix[i][j] * weights[j]
             scores.append(sentence_score)
 
         return self.build_abstract(max_len, document.original.sentences, scores)

@@ -11,8 +11,11 @@ from science_parse_api.api import parse_pdf as parser
 host_default = 'http://127.0.0.1'
 port_default = 10001
 
+
 def parse_pdf(file, hostname=host_default, port=port_default):
-    return parser(hostname, file, port=str(port))
+    pdf = parser(hostname, file, port=str(port))
+
+    return ' '.join([section['text'] for section in pdf['sections']])
 
 
 # данный парсер применим для не отсканнированных pdf документов
