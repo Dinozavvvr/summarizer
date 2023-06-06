@@ -21,13 +21,22 @@ class Summary:
 
 class Summarizer:
 
-    def __init__(self, metrics: [Metric], weights: [float] = None, language='russian', max_len=300):
+    def __init__(self, metrics: [Metric], weights: [float] = None, language='russian', max_len=300,
+                 keywords=None, min_keyword_impact=0.1, max_keyword_impact=0.3):
+        # base
         self.language = language
         self.metrics = metrics
         self.max_len = max_len
         self.weights = weights
+        # keywords
+        self.keywords = keywords
+        self.min_keyword_impact = min_keyword_impact
+        self.max_keyword_impact = max_keyword_impact
+
         if self.weights is None:
             self.weights = []
+        if self.keywords is None:
+            self.keywords = []
 
         if len(self.metrics) == 0:
             raise ValueError('Metrics cannot be empty')
@@ -56,7 +65,9 @@ class Summarizer:
                 sentence_score += matrix[i][j] * self.weights[j]
             scores.append(sentence_score)
 
-        return self.build_abstract(max_len, document.original.sentences, scores)
+        # изменяем final score на основе keyword
+
+        return self.__build_abstract(max_len, document.original.sentences, scores)
 
     # вариация метода summarize для вызова Генетическим Алгоритмом
     def summarize_(self, document: Document, score_matrix, weights, max_len=None):
@@ -71,10 +82,10 @@ class Summarizer:
                 sentence_score += score_matrix[i][j] * weights[j]
             scores.append(sentence_score)
 
-        return self.build_abstract(max_len, document.original.sentences, scores)
+        return self.__build_abstract(max_len, document.original.sentences, scores)
 
     @staticmethod
-    def build_abstract(max_len, sentences, scores):
+    def __build_abstract(max_len, sentences, scores):
         sentences = [sentence.value for sentence in sentences]
         sentence_metrics = list(zip(sentences, scores))
         sorted_sentences = sorted(sentence_metrics, key=lambda x: x[1], reverse=True)
@@ -90,3 +101,9 @@ class Summarizer:
                 total_words += words_count
 
         return Summary(selected_sentences)
+
+    def __keyword_based_classification(self, scores, document: Document):
+        sentences = document.processed.sentences
+
+        for sentence in sentences:
+            pass

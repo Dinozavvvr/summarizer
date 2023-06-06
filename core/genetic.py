@@ -6,7 +6,7 @@ from core.summarizer import Article, Summarizer
 from utils.preprocessor import *
 
 
-class ArticleCache:
+class PreprocessedArticle:
 
     def __init__(self, score_matrix, document):
         self.score_matrix = score_matrix
@@ -40,7 +40,7 @@ class SummarizationGeneticAlgoritm:
             document = self.preprocessor.preprocess(article.text, article.title)
 
             matrix, dataframe = self.summarizer.score_matrix.compute(document)
-            self.article_caches[article] = ArticleCache(matrix, document)
+            self.article_caches[article] = PreprocessedArticle(matrix, document)
 
     # функция для определния начальной популяции
     def __generate_first_population(self):
@@ -71,10 +71,9 @@ class SummarizationGeneticAlgoritm:
             value = 0
 
             for article in self.articles:
-                article_cache: ArticleCache = self.article_caches[article]
+                article_cache: PreprocessedArticle = self.article_caches[article]
 
                 original_summary = article.annotation
-
                 generated_summary = self.summarizer.summarize_(article_cache.document, article_cache.score_matrix,
                                                                chomosome, max_len=len(original_summary)).text
 

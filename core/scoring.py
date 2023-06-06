@@ -158,7 +158,6 @@ class COV(Metric):
 
         extraction = self.extractor.extract_keywords(document.processed.value)
         keywords = [keyword[0] for keyword in extraction]
-        probabilities = [keyword[1] for keyword in extraction]
 
         for sentence in document.processed.sentences:
             keywords_per_sentence = set()
@@ -508,7 +507,6 @@ class TITLE_C(Metric):
 
 
 class TEXT_RANK(Metric):
-
     name = "TEXT_RANK"
     description = "Page Rank implementation for texts"
 
