@@ -21,7 +21,7 @@ class DownloaderViewSet(ModelViewSet):
         link = serializers.CharField(max_length=200000)
 
     @action(detail=False, methods=['post'], serializer_class=DownloadFileRequest)
-    def download(self, request: DownloadFileRequest):
+    def upload(self, request: DownloadFileRequest):
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
 
