@@ -9,6 +9,7 @@ class Document(models.Model):
     title = models.CharField(max_length=1000)
     file = models.FileField(upload_to='documents/%Y/%m/%d/', null=True)
     created = models.DateTimeField(auto_now_add=True)
+    annotation = models.CharField(max_length=10000000, null=True)
 
     REQUIRED_FIELDS = ['title']
 
@@ -23,6 +24,8 @@ class DocumentCollection(models.Model):
     name = models.CharField(max_length=1000)
     password = models.CharField(max_length=8)
     documents = models.ManyToManyField(Document)
+    score = models.FloatField(null=True)
+    weights = models.CharField(null=True)
 
     def add_document(self, document):
         self.documents.add(document)

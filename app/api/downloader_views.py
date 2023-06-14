@@ -19,6 +19,7 @@ class DownloaderViewSet(ModelViewSet):
     class DownloadFileRequest(serializers.Serializer):
         title = serializers.CharField(max_length=1000)
         link = serializers.CharField(max_length=200000)
+        annotation = serializers.CharField(max_length=100000000)
 
     @action(detail=False, methods=['post'], serializer_class=DownloadFileRequest)
     def upload(self, request: DownloadFileRequest):
@@ -27,6 +28,7 @@ class DownloaderViewSet(ModelViewSet):
 
         link = serializer.validated_data['link']
         title = serializer.validated_data['title']
+        annotation = serializer.validated_data['annotation']
 
         # Загрузка файла
         response = requests.get(link)
@@ -37,7 +39,7 @@ class DownloaderViewSet(ModelViewSet):
         file_name = str(uuid.uuid4()) + '.pdf'
 
         # Создание объекта Document
-        document = Document(title=title)
+        document = Document(title=title, annotation=annotation)
 
         # Сохранение файла в поле file модели Document
         document.file.save(file_name, ContentFile(response.content), save=True)

@@ -30,7 +30,9 @@ router.register(r'downloader', downloader_views.DownloaderViewSet, basename='dow
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('documents/<int:pk>/download/', DocumentViewSet.as_view({'get': 'download'}), name='document-download'),
+    path('documents/<int:pk>/download/', document_view.DocumentViewSet.as_view({'get': 'download'}), name='document-download'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('collection/<int:pk>/traine/', document_collection_view.DocumentCollectionViewSet.as_view({'post': 'traine'}),
+         name='collection-traine'),
 ]

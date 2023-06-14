@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from base.models import Document, DocumentCollection
 
 
@@ -19,7 +20,7 @@ class DocumentSerializer(serializers.ModelSerializer):
 class DocumentCollectionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentCollection
-        fields = ['name', 'password']
+        fields = ['id', 'name', 'password']
         extra_kwargs = {
             'password': {'write_only': True},
         }

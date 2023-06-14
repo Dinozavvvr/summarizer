@@ -16,10 +16,10 @@ data_dir = 'data'
 
 if __name__ == '__main__':
     # скачивание
-    file = get_path(data_dir, '1.txt')
-    # file = get_path(data_dir, '1.pdf')
-    # text = parse_pdf(file)
-    text = read(file)
+    # file = get_path(data_dir, '1.txt')
+    file = get_path(data_dir, '1.pdf')
+    text = parse_pdf(file)
+    # text = read(file)
     # log(document)
 
     # предобработка
