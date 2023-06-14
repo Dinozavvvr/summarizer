@@ -1,11 +1,9 @@
 # Приложение для генерации Суммаризированного текста для научных статей в формате pdf
-import numpy as np
-
+from core.summarizer import Summarizer, Article
 # импорт утилит для работы с файлами и логами
 from common.file.fileutils import *
 from common.log.logutils import *
 from core.scoring import *
-from core.summarizer import Summarizer, Article
 from utils.parser import parse_pdf
 from core.genetic import SummarizationGeneticAlgoritm
 # Импорт утилиты для парсинга текста
@@ -16,10 +14,10 @@ data_dir = 'data'
 
 if __name__ == '__main__':
     # скачивание
-    # file = get_path(data_dir, '1.txt')
-    file = get_path(data_dir, '1.pdf')
-    text = parse_pdf(file)
-    # text = read(file)
+    file = get_path(data_dir, '1.txt')
+    # file = get_path(data_dir, '1.pdf')
+    # text = parse_pdf(file)
+    text = read(file)
     # log(document)
 
     # предобработка

@@ -1,12 +1,10 @@
 import re
 import uuid
 
-from gingerit.gingerit import GingerIt
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import sent_tokenize, word_tokenize
 from pymorphy2 import MorphAnalyzer
-from pyaspeller import YandexSpeller
 
 morph = MorphAnalyzer()
 
@@ -78,7 +76,6 @@ class Preprocessor:
         # Общие константы
         self.language = language
         self.stops = set(stopwords.words(language))
-        self.speller = YandexSpeller(lang=self.language[0:2])
 
     @staticmethod
     def lemmatize_many(tokens):

@@ -1,4 +1,7 @@
 # функция для построения итогового текста длинной от min до max на основании Score метрики приделожений из текста
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_distances
+
 from summarizer.common.log.logutils import *
 from summarizer.core.scoring import *
 from summarizer.utils.preprocessor import *
@@ -66,6 +69,7 @@ class Summarizer:
             scores.append(sentence_score)
 
         # изменяем final score на основе keyword
+        self.__keyword_based_classification(scores, document)
 
         return self.__build_abstract(max_len, document.original.sentences, scores)
 
@@ -81,6 +85,8 @@ class Summarizer:
             for j in range(len(self.metrics)):
                 sentence_score += score_matrix[i][j] * weights[j]
             scores.append(sentence_score)
+
+        self.__keyword_based_classification(scores, document)
 
         return self.__build_abstract(max_len, document.original.sentences, scores)
 
@@ -104,6 +110,42 @@ class Summarizer:
 
     def __keyword_based_classification(self, scores, document: Document):
         sentences = document.processed.sentences
+        scores_boost = []
 
         for sentence in sentences:
-            pass
+            distance = self.get_distance(sentence.value, self.keywords)
+            if distance != 1.0:
+                scores_boost.append((1 - distance) * 5)
+            else:
+                scores_boost.append(0)
+
+        scores_final_boost = []
+        length = len(scores_boost)
+
+        for i in range(length):
+            left_sum = 0
+            right_sum = 0
+
+            # Суммируем значения слева от текущего элемента
+            for j in range(i - 2, i):
+                if j >= 0:
+                    left_sum += scores_boost[j] / 2
+
+            # Суммируем значения справа от текущего элемента
+            for k in range(i + 1, i + 3):
+                if k < length:
+                    right_sum += scores_boost[k] / 2
+
+            modified_value = (left_sum + right_sum + scores_boost[i])
+            scores_final_boost.append(modified_value)
+
+        for i in range(len(scores)):
+            scores[i] *= 1 + scores_final_boost[i]
+
+    @staticmethod
+    def get_distance(sentence, keywords):
+        vectorizer = TfidfVectorizer(lowercase=True)
+        tfidf_matrix = vectorizer.fit_transform([sentence, keywords])
+        distance = cosine_distances(tfidf_matrix[0], tfidf_matrix[1])
+
+        return distance[0][0]

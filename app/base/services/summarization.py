@@ -16,6 +16,7 @@ class SummarizationService:
         self.pop_size = pop_size
         self.language = language
         self.interations_limit = iterations_limit
+        self.keywords = self.__get_keywords()
 
     def summarize(self, collection: DocumentCollection, document, max_len=300):
         article = self.__prepare_articles([document])[0]
@@ -27,7 +28,7 @@ class SummarizationService:
             KEY(), LUHN(), LEN_CH(),
             LEN_W(), SVD(), TITLE_O(),
             TITLE_J(), TITLE_C(), TEXT_RANK()
-        ], weights, max_len=max_len)
+        ], weights, max_len=max_len, keywords=self.keywords)
 
         return summarizer.summarize(article)
 
@@ -57,3 +58,8 @@ class SummarizationService:
             articles.append(Article(title, text, document.annotation))
 
         return articles
+
+    @staticmethod
+    def __get_keywords():
+        with open('keywords.txt', 'r') as f:
+            return f.read().replace('\n', ' ')
