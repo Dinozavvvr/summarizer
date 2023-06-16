@@ -1,0 +1,42 @@
+@import "header/header.css";
+@import "vars.css";
+@import "common.css";
+
+.content {
+    padding-top: 60px;
+}
+
+.content_menu {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    gap: 46px;
+}
+
+.content_menu__item {
+    display: inline-block;
+    padding: 44px;
+    background: var(--bg-white);
+    box-shadow: none;
+
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    border: 1px solid var(--bg-black);
+}
+
+.content_menu__item > span {
+    font-family: var(--f-2);
+    font-size: var(--fs-1);
+    font-weight: bold;
+    display: block;
+
+}
+
+.content_menu__item:hover {
+    box-shadow: 5px -5px 0 var(--bg-black);
+    transform: translate(-5px, 5px);
+}
+
+.content_description {
+    margin-top: 46px;
+    font-family: var(--fs-3);
+}

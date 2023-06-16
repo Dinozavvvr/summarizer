@@ -1,0 +1,84 @@
+@import "header.css";
+@import "vars.css";
+@import "common.css";
+
+.content {
+    padding-top: 60px;
+}
+
+.content_title-wrapper {
+    display: flex;
+}
+
+.content_title-buttons {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 22px;
+    font-family: var(--f-2);
+
+    font-size: var(--fs-4);
+
+    text-align: right;
+    opacity: 0.75;
+}
+
+.content_title-button {
+    margin-bottom: 4px;
+}
+
+.content_title-button:hover {
+    opacity: 0.6;
+}
+
+.content_title {
+    font-size: var(--fs-2);
+    font-weight: bold;
+
+    margin-bottom: 22px;
+}
+
+.content_collections {
+    margin-top: 22px;
+    margin-bottom: 60px;
+}
+
+.collection {
+    display: flex;
+
+    background: var(--bg-white);
+
+    padding: 20px;
+    margin-bottom: 20px;
+    width: inherit;
+    border: 1px solid var(--bg-black);
+
+    box-shadow: none;
+
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.collection:hover {
+    box-shadow: 5px -5px 0 var(--bg-black);
+    transform: translate(-5px, 5px);
+
+    cursor: pointer;
+}
+
+.collection_icon {
+    margin-right: 20px;
+}
+
+.collection_icon > img {
+    max-width:100%;
+    max-height:100%;
+}
+
+.collection_info {
+    font-size: var(--fs-5);
+}
+
+.collection_title {
+    font-size: var(--fs-4);
+    font-weight: bold;
+    margin-bottom: 6px;
+}

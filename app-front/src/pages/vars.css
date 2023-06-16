@@ -1,0 +1,20 @@
+:root {
+    --bg-color: #F5FCFF;
+    --bg-white: #FFFFFF;
+    --bg-black: #181818;
+    --bg-green: #84FFC4;
+
+    --ft-grey: #B5B5B5;
+    --ft-black: #181818;
+    --ft-white: #FFFFFF;
+
+    --fs-1: 34px;
+    --fs-2: 30px;
+    --fs-3: 24px;
+    --fs-4: 20px;
+    --fs-5: 16px;
+
+    --f-1: Inter, sans-serif;
+    --f-2: Ubuntu, sans-serif;
+
+}
