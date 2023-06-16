@@ -1,5 +1,5 @@
-@import "vars.css";
-@import "common.css";
+@import "../../pages/vars.css";
+@import "../../pages/common.css";
 
 .header-wrapper {
     width: 100vw;

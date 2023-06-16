@@ -32,6 +32,7 @@ class SummarizationGeneticAlgoritm:
         self.preprocessor = Preprocessor(language)
         # кэш
         self.article_caches = {}
+        self.lemmas_caches = {}
         # предобрабатываем документы
         self.__prepare_data()
 
@@ -98,7 +99,12 @@ class SummarizationGeneticAlgoritm:
                       if token not in self.preprocessor.stops]:
             word = self.preprocessor.clear(token, True)
             if word != '':
-                words.append(self.preprocessor.lemmatize(word.lower()))
+                if word not in self.lemmas_caches:
+                    lemma = self.preprocessor.lemmatize(word.lower())
+                    self.lemmas_caches[word] = lemma
+                else:
+                    lemma = self.lemmas_caches[word]
+                words.append(lemma)
 
         return ' '.join(words)
 

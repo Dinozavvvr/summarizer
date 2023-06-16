@@ -49,17 +49,11 @@ class SummarizationService:
     def __prepare_articles(documents):
         articles = []
         for document in documents:
-            base_path = Path('D:/Study/PythonProjects/summarizer/app/')
-            file_path = base_path.joinpath(document.file.name)
-            logger.debug(document.file.name)
-            text = parse_pdf(file_path.resolve())
-            title = document.title
-
-            articles.append(Article(title, text, document.annotation))
+            articles.append(Article(document.title, document.text, document.annotation))
 
         return articles
 
     @staticmethod
     def __get_keywords():
-        with open('keywords.txt', 'r') as f:
+        with open('keywords.txt', 'r', encoding='utf-8') as f:
             return f.read().replace('\n', ' ')

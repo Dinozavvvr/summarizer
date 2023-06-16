@@ -2,9 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Lobachevskii Summarizer</title>
+  <link rel="stylesheet" type="text/css" href="../css/login.css">
 </head>
 <body>
-$END$
+<div class="body-wrapper">
+  <div class="header-wrapper">
+    <header class="header">
+      <div class="header_content">
+        <div class="header_logo-wrapper">
+          <div class="header_logo">
+            <div class="header_logo__title">
+              <a href="#">Summarization Tool</a>
+            </div>
+            <div class="header_logo__subtitle">
+              Lobachevskii Digital Mathematics Library
+            </div>
+          </div>
+        </div>
+        <div class="header_menu-wrapper">
+          <div class="header_menu">
+            <a href="#" class="header_menu__item"><span>Войти</span></a>
+            <a href="#" class="header_menu__item"><span>Документы</span></a>
+            <a href="#" class="header_menu__item"><span>Коллекции</span></a>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="content">
+      <form class="content_form form">
+        <div class="form_title">Создать коллекцию</div>
+        <div class="form_field">
+          <label for="username" class="form_label">Название</label>
+          <input id="username" class="from_input" type="text"/>
+        </div>
+        <div class="form_field">
+          <label for="description" class="form_label">Описание</label>
+          <textarea id="description" class="from_input from_textarea" type="text"></textarea>
+        </div>
+        <div class="form_field">
+          <label for="password" class="form_label">Пароль к коллекции</label>
+          <input type="password" id="password" class="from_input"/>
+        </div>
+        <div class="form_field">
+          <button class="content_button">Создать</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 </body>
 </html>

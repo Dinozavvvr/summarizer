@@ -1,4 +1,4 @@
-@import "header.css";
+@import "../components/header/header.css";
 @import "vars.css";
 @import "common.css";
 
@@ -49,7 +49,7 @@
 
     padding: 20px;
     margin-bottom: 20px;
-    width: inherit;
+    width: calc(100% - 20px);
     border: 1px solid var(--bg-black);
 
     box-shadow: none;
@@ -65,6 +65,7 @@
 }
 
 .collection_icon {
+    min-width: 100px;
     margin-right: 20px;
 }
 

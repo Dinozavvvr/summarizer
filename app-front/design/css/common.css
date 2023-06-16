@@ -1,0 +1,53 @@
+@import "vars.css";
+@import "normalize.css";
+@import "fonts.css";
+
+body {
+    background: var(--bg-color);
+    color: var(--ft-black);
+
+    font-family: var(--f-1);
+    font-size: var(--fs-3);
+}
+
+a {
+    color: var(--ft-black);
+}
+
+.content-wrapper {
+    width: 100vw;
+    height: auto;
+
+    display: flex;
+    justify-content: center;
+}
+
+.content {
+    padding: 0 10px 0 10px;
+    margin-bottom: 100px;
+
+    width: 100%;
+    max-width: 1000px;
+}
+
+
+.content_button {
+    display: block;
+    text-align: center;
+
+    background: var(--bg-green);
+
+    font-weight: bold;
+
+    padding: 10px;
+    border-radius: 0;
+    border: 1px solid var(--bg-black);
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.content_button:hover {
+    cursor: pointer;
+
+    box-shadow: 5px -5px 0 var(--bg-black);
+    transform: translate(-5px, 5px);
+}

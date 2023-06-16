@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lobachevskii Summarizer</title>
+    <link rel="stylesheet" type="text/css" href="../css/trainee.css">
+</head>
+<body>
+<div class="body-wrapper">
+    <div class="header-wrapper">
+        <header class="header">
+            <div class="header_content">
+                <div class="header_logo-wrapper">
+                    <div class="header_logo">
+                        <div class="header_logo__title">
+                            <a href="#">Summarization Tool</a>
+                        </div>
+                        <div class="header_logo__subtitle">
+                            Lobachevskii Digital Mathematics Library
+                        </div>
+                    </div>
+                </div>
+                <div class="header_menu-wrapper">
+                    <div class="header_menu">
+                        <a href="#" class="header_menu__item"><span>Войти</span></a>
+                        <a href="#" class="header_menu__item"><span>Документы</span></a>
+                        <a href="#" class="header_menu__item"><span>Коллекции</span></a>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="content">
+            <div class="content_title">Добавление документа</div>
+            <form class="content_form form">
+                <div class="form_field">
+                    <label for="iteration_num" class="form_label">Заголовок</label>
+                    <input id="iteration_num" class="from_input" type="text"/>
+                </div>
+                <div class="form_field">
+                    <label for="link" class="form_label">Источник</label>
+                    <input id="link" class="from_input" type="text"/>
+                </div>
+                <div class="form_field">
+                    <label for="description" class="form_label">Аннотация</label>
+                    <textarea id="description" class="from_input from_textarea" type="text"></textarea>
+                </div>
+                <div class="form_field" hidden>
+                    <label for="text" class="form_label">Текст</label>
+                    <textarea id="text" class="from_input from_textarea" type="text"></textarea>
+                </div>
+<!--                <div class="form_field">-->
+<!--                    <input id="file" class="from_file" type="file" hidden/>-->
+<!--                    <label for="file" class="form_label form_file from_input">Загрузить файл</label>-->
+<!--                </div>-->
+                <div class="form_field">
+                    <button class="content_button">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

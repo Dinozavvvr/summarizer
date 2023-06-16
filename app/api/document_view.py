@@ -25,3 +25,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
         document = get_object_or_404(Document, pk=pk)
         file_path = document.file.path
         return FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Отображаем только документы, принадлежащие текущему пользователю
+        queryset = queryset.filter(user=self.request.user)
+        return queryset

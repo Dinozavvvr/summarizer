@@ -2,9 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Lobachevskii Summarizer</title>
+  <link rel="stylesheet" type="text/css" href="../css/trainee.css">
 </head>
 <body>
-$END$
+<div class="body-wrapper">
+  <div class="header-wrapper">
+    <header class="header">
+      <div class="header_content">
+        <div class="header_logo-wrapper">
+          <div class="header_logo">
+            <div class="header_logo__title">
+              <a href="#">Summarization Tool</a>
+            </div>
+            <div class="header_logo__subtitle">
+              Lobachevskii Digital Mathematics Library
+            </div>
+          </div>
+        </div>
+        <div class="header_menu-wrapper">
+          <div class="header_menu">
+            <a href="#" class="header_menu__item"><span>Войти</span></a>
+            <a href="#" class="header_menu__item"><span>Документы</span></a>
+            <a href="#" class="header_menu__item"><span>Коллекции</span></a>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="content">
+      <div class="content_title">Обучение:</div>
+      <div class="content_title">Коллекция обучения журнала: Известия высших учебных заведений.
+        Математика</div>
+      <form class="content_form form">
+        <div class="form_field">
+          <label for="iteration_num" class="form_label">Количество итераций</label>
+          <input id="iteration_num" class="from_input" type="number"/>
+        </div>
+        <div class="form_field">
+          <label for="population_size" class="form_label">Размер популяции</label>
+          <input id="population_size" class="from_input" type="number"/>
+        </div>
+        <div class="form_field">
+          <label class="form_label">Метрики обучения</label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>TF
+          </label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>TF-ISF
+          </label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>POS-L
+          </label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>TF
+          </label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>TF-ISF
+          </label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>POS-L
+          </label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>TF
+          </label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>TF-ISF
+          </label>
+          <label class="from_checkbox-label">
+            <input class="from_checkbox" type="checkbox"/>POS-L
+          </label>
+        </div>
+        <div class="form_field">
+          <button class="content_button">Начать обучение</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 </body>
 </html>

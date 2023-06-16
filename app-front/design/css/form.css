@@ -1,0 +1,102 @@
+.form {
+    width: inherit;
+    max-width: 700px;
+
+    margin-top: 46px;
+    font-family: var(--f-2);
+}
+
+.form_title {
+    font-size: var(--fs-2);
+    font-weight: bold;
+
+    margin-bottom: 26px;
+}
+
+.form_field {
+    width: inherit;
+
+    font-size: var(--fs-4);
+    font-weight: bold;
+}
+
+.form_label {
+    width: inherit;
+
+    padding: 14px 0 8px 12px;
+
+    display: block;
+}
+
+.from_input {
+    all: unset;
+    width: inherit;
+
+    font-weight: bold;
+
+    padding: 10px;
+    border-radius: 0;
+    border: 1px solid var(--bg-black);
+    background: var(--bg-white);
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.from_input:focus {
+    box-shadow: 5px -5px 0 var(--bg-black);
+    transform: translate(-5px, 5px);
+}
+
+.content_form .content_button {
+    margin-top: 46px;
+}
+
+input[type="password"]
+{
+    -webkit-text-security: circle;
+    letter-spacing: 6px;
+}
+
+.from_textarea {
+    height: 200px;
+}
+
+.content_button {
+    width: calc(100% + 20px);
+    max-width: inherit;
+}
+
+.from_checkbox {
+    appearance: none;
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+    background: var(--bg-white);
+    border: 1px solid var(--bg-black);
+    box-shadow: none;
+
+    transition: box-shadow 0.4s ease, transform 0.4s ease, background-color 0.4s ease;
+}
+
+.from_checkbox-label {
+    cursor: pointer;
+    display: flex;
+    margin-top: 20px;
+}
+
+.from_checkbox:focus {
+    outline: none;
+}
+
+.from_checkbox-label .from_checkbox {
+    margin-right: 1%;
+}
+
+.from_checkbox:checked {
+    background: var(--bg-green);
+    box-shadow: 5px -5px 0 var(--bg-black);
+    transform: translate(-5px, 5px);
+}
+
+.from_checkbox-label:checked {
+    color: red;
+}

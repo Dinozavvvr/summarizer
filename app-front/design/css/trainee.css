@@ -1,0 +1,10 @@
+@import "header.css";
+@import "vars.css";
+@import "common.css";
+@import "form.css";
+@import "collections.css";
+
+
+.form {
+    max-width: 100%;
+}

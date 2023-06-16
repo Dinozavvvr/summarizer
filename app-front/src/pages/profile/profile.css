@@ -1,15 +1,19 @@
-@import "header/header.css";
-@import "vars.css";
-@import "common.css";
+@import "../../components/header/header.css";
+@import "../vars.css";
+@import "../common.css";
 
 .content {
     padding-top: 60px;
 }
 
-.content_menu {
+.content_profile_menu {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 32px 46px;
+}
+
+.content_profile_menu .content_button {
+    width: calc(100% - 20px);
 }
 
 .content_menu__item {

@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class Document(models.Model):
@@ -10,6 +12,9 @@ class Document(models.Model):
     file = models.FileField(upload_to='documents/%Y/%m/%d/', null=True)
     created = models.DateTimeField(auto_now_add=True)
     annotation = models.CharField(max_length=10000000, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    text = models.TextField(null=True)
+    commited = models.BooleanField(default=False)
 
     REQUIRED_FIELDS = ['title']
 
@@ -26,6 +31,7 @@ class DocumentCollection(models.Model):
     documents = models.ManyToManyField(Document)
     score = models.FloatField(null=True)
     weights = models.CharField(null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     def add_document(self, document):
         self.documents.add(document)
