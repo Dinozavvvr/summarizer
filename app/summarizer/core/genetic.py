@@ -84,12 +84,23 @@ class SummarizationGeneticAlgoritm:
         return fitness_result
 
     def __closest(self, original_summary: str, generated_summary: str):
-        original_summary_ = self.preprocessor.clear(original_summary.lower())
-        generated_summary_ = self.preprocessor.clear(generated_summary.lower())
+        original_summary_ = self.__clear_annotations(original_summary.lower())
+        generated_summary_ = self.__clear_annotations(generated_summary.lower())
 
         smoothing = SmoothingFunction()
         return sentence_bleu([original_summary_.split()], generated_summary_.split(),
                              smoothing_function=smoothing.method1)
+
+    def __clear_annotations(self, text):
+        text = self.preprocessor.clear(text)
+        words = []
+        for token in [token for token in self.preprocessor.tokenize(text, self.language)
+                      if token not in self.preprocessor.stops]:
+            word = self.preprocessor.clear(token, True)
+            if word != '':
+                words.append(self.preprocessor.lemmatize(word.lower()))
+
+        return ' '.join(words)
 
     # функция для нахождения интервалов для выборки хромосом
     @staticmethod

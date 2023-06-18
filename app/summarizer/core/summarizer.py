@@ -39,7 +39,7 @@ class Summarizer:
         if self.weights is None:
             self.weights = []
         if self.keywords is None:
-            self.keywords = []
+            self.keywords = ''
 
         if len(self.metrics) == 0:
             raise ValueError('Metrics cannot be empty')
@@ -47,6 +47,7 @@ class Summarizer:
         # SCORE - матрица
         self.score_matrix = ScoreMatrix(self.metrics)
         self.preprocessor = Preprocessor(self.language)
+        self.distance_cache = {}
 
     def summarize(self, article: Article, max_len=None, verbose=False):
         if max_len is None:
@@ -93,18 +94,20 @@ class Summarizer:
     @staticmethod
     def __build_abstract(max_len, sentences, scores):
         sentences = [sentence.value for sentence in sentences]
-        sentence_metrics = list(zip(sentences, scores))
+        sentence_metrics = list(zip(sentences, scores, range(len(scores))))
         sorted_sentences = sorted(sentence_metrics, key=lambda x: x[1], reverse=True)
 
         selected_sentences = []
         total_words = 0
 
-        for sentence, metric in sorted_sentences:
+        for sentence, metric, i in sorted_sentences:
             words_count = len(sentence.split())
 
             if total_words + words_count <= max_len:
-                selected_sentences.append(sentence)
+                selected_sentences.append((sentence, i))
                 total_words += words_count
+
+        selected_sentences = [sent[0] for sent in sorted(selected_sentences, key=lambda x: x[1], reverse=False)]
 
         return Summary(selected_sentences)
 
@@ -113,7 +116,11 @@ class Summarizer:
         scores_boost = []
 
         for sentence in sentences:
-            distance = self.get_distance(sentence.value, self.keywords)
+            if sentence.value not in self.distance_cache:
+                distance = self.get_distance(sentence.value, self.keywords)
+                self.distance_cache[sentence.value] = distance
+            distance = self.distance_cache[sentence.value]
+
             if distance != 1.0:
                 scores_boost.append((1 - distance) * 5)
             else:

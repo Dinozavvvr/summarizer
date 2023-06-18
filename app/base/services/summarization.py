@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class SummarizationService:
 
-    def __init__(self, pop_size=6, iterations_limit=1000, language="russian"):
+    def __init__(self, pop_size=8, iterations_limit=1000, language="russian"):
         self.pop_size = pop_size
         self.language = language
         self.interations_limit = iterations_limit
@@ -39,7 +39,7 @@ class SummarizationService:
             KEY(), LUHN(), LEN_CH(),
             LEN_W(), SVD(), TITLE_O(),
             TITLE_J(), TITLE_C(), TEXT_RANK()
-        ])
+        ], keywords=self.keywords)
         ga = SummarizationGeneticAlgoritm(self.pop_size, self.__prepare_articles(documents), summarizer,
                                           self.language)
 

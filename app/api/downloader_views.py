@@ -19,7 +19,7 @@ class DownloaderViewSet(ModelViewSet):
     class DownloadFileRequest(serializers.Serializer):
         title = serializers.CharField(max_length=1000)
         link = serializers.CharField(max_length=200000)
-        annotation = serializers.CharField(max_length=100000000)
+        annotation = serializers.CharField(max_length=100000000, allow_null=True)
 
     @action(detail=False, methods=['post'], serializer_class=DownloadFileRequest)
     def upload(self, request: DownloadFileRequest):
