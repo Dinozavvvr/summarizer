@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-&!$5b0n$615=6hm(x=j89fz-n47)^n_=svpolu4n&pn#3a!f3w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -142,9 +142,12 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:*',
 ]
 
+
 CORS_ALLOW_METHODS = [
     'GET',
     'POST',
+    'PUT',
+    'DELETE'
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -195,3 +198,5 @@ if DEBUG:
     # make all loggers use the console.
     for logger in LOGGING['loggers']:
         LOGGING['loggers'][logger]['handlers'] = ['console']
+
+KNOX_TOKEN_TTL = 1000 * 365 * 24 * 60

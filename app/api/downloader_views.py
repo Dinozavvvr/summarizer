@@ -1,4 +1,5 @@
 import uuid
+from pathlib import Path
 
 import requests
 from django.core.files.base import ContentFile
@@ -23,7 +24,7 @@ class UploaderViewSet(ModelViewSet):
     class UploadFileRequest(serializers.Serializer):
         title = serializers.CharField(max_length=1000)
         link = serializers.CharField(max_length=200000)
-        annotation = serializers.CharField(max_length=100000000, allow_null=True)
+        annotation = serializers.CharField(max_length=100000000, allow_null=True, allow_blank=True)
 
     @action(detail=False, methods=['post'], serializer_class=UploadFileRequest)
     def upload(self, request: UploadFileRequest):
@@ -47,11 +48,11 @@ class UploaderViewSet(ModelViewSet):
 
         # Сохранение файла в поле file модели Document
         document.file.save(file_name, ContentFile(response.content), save=True)
-        document.text = parse_pdf(document.file.path)
+        document.text = parse_pdf(Path(document.file.path))
 
         document.save()
 
-        return Response(DocumentSerializer(document, self.get_serializer_context()).data,
+        return Response(DocumentSerializer(document, context=self.get_serializer_context()).data,
                         status=status.HTTP_201_CREATED)
 
     def get_queryset(self):

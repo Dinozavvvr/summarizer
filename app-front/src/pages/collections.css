@@ -2,11 +2,16 @@
 @import "vars.css";
 @import "common.css";
 
+.form {
+    max-width: 100%;
+}
+
 .content {
     padding-top: 60px;
 }
 
 .content_title-wrapper {
+    width: calc(100% + 40px);
     display: flex;
 }
 
@@ -49,12 +54,12 @@
 
     padding: 20px;
     margin-bottom: 20px;
-    width: calc(100% - 20px);
+    width: 100%;
     border: 1px solid var(--bg-black);
 
     box-shadow: none;
 
-    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    transition: box-shadow 0.4s ease, transform 0.4s ease, background-color 0.4s ease;
 }
 
 .collection:hover {
@@ -65,13 +70,11 @@
 }
 
 .collection_icon {
-    min-width: 100px;
     margin-right: 20px;
 }
 
 .collection_icon > img {
-    max-width:100%;
-    max-height:100%;
+    width: 100px;
 }
 
 .collection_info {
@@ -82,4 +85,21 @@
     font-size: var(--fs-4);
     font-weight: bold;
     margin-bottom: 6px;
+}
+
+.form_file {
+    display: block;
+    margin-top: 36px;
+    cursor: pointer;
+}
+
+.form_file:hover {
+    box-shadow: 5px -5px 0 var(--bg-black);
+    transform: translate(-5px, 5px);
+
+    cursor: pointer;
+}
+
+.selected {
+    background: var(--bg-green);
 }

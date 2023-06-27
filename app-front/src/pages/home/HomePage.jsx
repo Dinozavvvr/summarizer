@@ -10,16 +10,15 @@ export default function HomePage() {
         <div className="content-wrapper">
             <div className="content">
                 <div className="content_menu">
-                    <Link to="/" className="content_menu__item"><span>Создать коллекцию обучения</span></Link>
-                    <Link to="/" className="content_menu__item"><span>Сформировать аннотацию</span></Link>
+                    <Link to="/collection/create" className="content_menu__item"><span>Создать коллекцию обучения</span></Link>
+                    <Link to="/profile" className="content_menu__item"><span>Профиль</span></Link>
                 </div>
                 <div className="content_description">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nulla massa, lobortis sit amet pretium
-                    a, sagittis quis velit. Vestibulum turpis nulla, porttitor vel ex eu, consectetur fermentum massa. Ut
-                    non auctor nisl, vitae euismod nisl. Nam in aliquam mi. Etiam ac pellentesque ex. Suspendisse eu congue
-                    lectus. Sed non elit efficitur, iaculis urna sit amet, faucibus lorem. Aenean aliquet pretium eros.
-                    Nunc non ornare nibh. Donec eget lacus et libero pellentesque consequat. Curabitur efficitur turpis ac
-                    facilisis elementum. Fusce vulputate urna vitae leo pretium, ut vehicula sapien consectetur
+                    <b>Lobachevskii DML Summarization Tool</b> - это сервис автоматического аннотированния научных
+                    физико-математических документов и статей, применяющий генетический алгоритм для составления
+                    аннотаций. Иструмент разработан в рамках выпускной квалификационной
+                    работы студентом Казанского Федерального Унивеситета (КФУ) Института Информационных Технологий и
+                    Интеллектуальных систем (ИТИС) группы 11-904 Шагалиевым Динаром
                 </div>
             </div>
         </div>

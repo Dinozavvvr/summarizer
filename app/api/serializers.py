@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from base.models import Document, DocumentCollection
+from base.models import Document, DocumentCollection, Metric, DocumentCollectionTraineResult
 
 User = get_user_model()
 
@@ -24,7 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['username'],
-                                        validated_data['email'],  validated_data['password'])
+                                        validated_data['email'], validated_data['password'])
 
         return user
 
@@ -46,16 +46,34 @@ class DocumentSerializer(serializers.ModelSerializer):
 class DocumentCollectionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentCollection
-        fields = ['id', 'name', 'password']
+        fields = ['id', 'name', 'password', 'description']
         extra_kwargs = {
             'password': {'write_only': True},
         }
 
 
+class MetricSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Metric
+        fields = ['id', 'name']
+
+
+class DocumentCollectionTraineResultSerializer(serializers.ModelSerializer):
+    metrics = MetricSerializer(many=True)
+
+    class Meta:
+        model = DocumentCollectionTraineResult
+        fields = '__all__'
+
+
 class DocumentCollectionSerializer(serializers.ModelSerializer):
+    documents = DocumentSerializer(many=True)
+    trainees = DocumentCollectionTraineResultSerializer(many=True, read_only=True,
+                                                        source='documentcollectiontraineresult_set')
+
     class Meta:
         model = DocumentCollection
-        fields = ['id', 'name', 'documents']
+        fields = ['id', 'name', 'documents', 'description', 'trainees']
         read_only_fields = ['id']
         extra_kwargs = {
             'password': {'write_only': True},
@@ -67,3 +85,9 @@ class DocumentCollectionSerializer(serializers.ModelSerializer):
         if DocumentCollection.objects.filter(name=name).exists():
             raise serializers.ValidationError('A collection with this name already exists.')
         return attrs
+
+
+class MetricSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Metric
+        fields = '__all__'

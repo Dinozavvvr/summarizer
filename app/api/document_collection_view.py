@@ -1,11 +1,15 @@
+import json
+from collections import OrderedDict
+
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import permissions
+from knox.auth import TokenAuthentication
 
-
-from api.serializers import DocumentCollectionSerializer, DocumentCollectionCreateSerializer
-from base.models import DocumentCollection, Document
+from api.serializers import DocumentCollectionSerializer, DocumentCollectionCreateSerializer, \
+    DocumentCollectionTraineResultSerializer
+from base.models import DocumentCollection, Document, DocumentCollectionTraineResult, Metric
 from base.services.summarization import SummarizationService
 
 
@@ -14,39 +18,7 @@ class DocumentCollectionViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentCollectionSerializer
     summarization_service = SummarizationService()
     permission_classes = (permissions.IsAuthenticated,)
-
-    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
-    def summarize(self, request, pk=None):
-        # Получаем данные из запроса
-        collection_id = pk
-        password = request.data.get('password')
-        document_id = request.data.get('document_id')
-        max_len = request.data.get('max_len')
-
-        try:
-            # Получаем коллекцию документов по id
-            collection = DocumentCollection.objects.get(id=collection_id)
-        except DocumentCollection.DoesNotExist:
-            return Response({'error': 'Коллекция документов не найдена'}, status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            # Получаем документ по id
-            document = Document.objects.get(id=document_id)
-        except Document.DoesNotExist:
-            return Response({'error': 'Документ не найден'}, status=status.HTTP_404_NOT_FOUND)
-
-        # Проверяем пароль
-        if request.user is None and collection.password != password:
-            return Response({'error': 'Неверный пароль для доступа к коллекции'}, status=status.HTTP_401_UNAUTHORIZED)
-
-        # Получаем аннотацию
-        summary = self.summarization_service.summarize(collection, document, max_len)
-        # Возвращаем успешный ответ со списком файлов
-
-        return Response({
-            'sentences': summary.sentences,
-            'text': summary.text
-        })
+    authentication_classes = (TokenAuthentication,)
 
     @action(detail=True, methods=['post'])
     def traine(self, request, pk=None):
@@ -59,18 +31,30 @@ class DocumentCollectionViewSet(viewsets.ModelViewSet):
         except DocumentCollection.DoesNotExist:
             return Response({'error': 'Коллекция документов не найдена'}, status=status.HTTP_404_NOT_FOUND)
 
+        trainee_result = DocumentCollectionTraineResult()
+        trainee_result.collection = collection
+        trainee_result.population_size = int(request.data.get('population_size'))
+        trainee_result.iteration_count = int(request.data.get('iteration_count'))
+        trainee_result.save()
+
+        for metric_id in request.data.get('metrics'):
+            trainee_result.metrics.add(Metric.objects.get(id=metric_id))
+
+        trainee_result.save()
+
         # Обучаем
-        weights, score = self.summarization_service.traine(collection.documents.all())
-        # Возвращаем успешный ответ со списком файлов
+        weights, score = self.summarization_service.traine(trainee_result, collection.documents.all())
+        trainee_result.score = score
+        metric_weight_map = OrderedDict()
 
-        collection.score = score
-        collection.weights = ', '.join([str(w) for w in weights])
-        collection.save()
+        for i, metric in enumerate(trainee_result.metrics.all()):
+            metric_weight_map[metric.id] = weights[i]
 
-        return Response({
-            'score': score,
-            'weights': weights
-        })
+        trainee_result.weights = json.dumps(metric_weight_map)
+        trainee_result.save()
+
+        serializer = DocumentCollectionTraineResultSerializer(trainee_result)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = DocumentCollectionCreateSerializer(data=request.data)
@@ -109,21 +93,25 @@ class DocumentCollectionViewSet(viewsets.ModelViewSet):
         return Response({'detail': 'Документ успешно добавлен в коллекцию'})
 
     @action(detail=True, methods=['post'])
-    def remove_document(self, request, pk=None):
-        collection = self.get_object()
-        password = request.data.get('password')
+    def add_documents(self, request, pk=None):
+        try:
+            documents = request.data.get('documents', [])
+            collection = self.get_object()
 
-        # Проверяем пароль перед удалением документа
-        if password and password != collection.password:
-            return Response({'error': 'Неверный пароль'}, status=status.HTTP_401_UNAUTHORIZED)
+            collection.documents.clear()
 
-        document_id = request.data.get('document_id')
-        document = Document.objects.get(id=document_id)
-        collection.documents.remove(document)
-        return Response({'detail': 'Документ успешно удален из коллекции'})
+            for document_data in documents:
+                document_id = document_data.get('id')
+                document = Document.objects.get(id=document_id)
+                collection.documents.add(document)
+
+            return Response({'message': 'Документы успешно добавлены в коллекцию.'})
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self):
         queryset = super().get_queryset()
         # Отображаем только коллекции документов, принадлежащие текущему пользователю
         queryset = queryset.filter(user=self.request.user)
+        queryset = queryset.prefetch_related('documents')
         return queryset

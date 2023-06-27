@@ -15,6 +15,7 @@ a {
 }
 
 .content-wrapper {
+    padding-top: 90px;
     width: 100vw;
     height: auto;
 
@@ -50,4 +51,8 @@ a {
 
     box-shadow: 5px -5px 0 var(--bg-black);
     transform: translate(-5px, 5px);
+}
+
+.delete_button {
+    background: var(--bg-red);
 }

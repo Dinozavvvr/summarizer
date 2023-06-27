@@ -10,9 +10,7 @@ export default function Header({menuItems}) {
                         <div className="header_logo__title">
                             <Link to="/">Summarization Tool</Link>
                         </div>
-                        <div className="header_logo__subtitle">
-                            Lobachevskii Digital Mathematics Library
-                        </div>
+                        <Link className="header_logo__subtitle" to="https://lobachevskii-dml.ru/">Lobachevskii Digital Mathematics Library</Link>
                     </div>
                 </div>
                 <div className="header_menu-wrapper">

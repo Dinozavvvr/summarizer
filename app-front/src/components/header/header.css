@@ -2,6 +2,9 @@
 @import "../../pages/common.css";
 
 .header-wrapper {
+    position: fixed;
+    z-index: 1000;
+
     width: 100vw;
     height: 90px;
 
@@ -40,6 +43,7 @@
 .header_logo__subtitle {
     font-size: 16.2px;
     color: var(--ft-grey);
+    display: flex;
 }
 
 .header_menu-wrapper {
